@@ -1,0 +1,3385 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Global Directory | Countries of the World</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    color: #1f2937;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(8, 47, 73, 0.94),
+            rgba(15, 118, 110, 0.88)
+        ),
+        radial-gradient(
+            circle at top right,
+            #38bdf8,
+            transparent 35%
+        );
+
+    background-attachment: fixed;
+}
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.15;
+}
+
+body::before {
+    width: 400px;
+    height: 400px;
+    background: #38bdf8;
+    top: -150px;
+    right: -100px;
+}
+
+body::after {
+    width: 300px;
+    height: 300px;
+    background: #14b8a6;
+    bottom: -100px;
+    left: -100px;
+}
+
+.container {
+    width: 92%;
+    max-width: 1100px;
+    margin: 50px auto;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.header .globe {
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+.header h1 {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 17px;
+    color: #dbeafe;
+    max-width: 650px;
+    margin: auto;
+    line-height: 1.6;
+}
+
+/* ================= SEARCH ================= */
+
+.search-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
+    margin-bottom: 25px;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #64748b;
+    pointer-events: none;
+}
+
+#myInput {
+    width: 100%;
+    padding: 16px 20px 16px 52px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+#myInput:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.10);
+}
+
+.search-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+#countryCount {
+    font-weight: bold;
+    color: #0f766e;
+}
+
+/* ================= COUNTRY GRID ================= */
+
+#myUL {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+#myUL li {
+    display: block;
+}
+
+#myUL li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    text-decoration: none;
+    color: #1e293b;
+
+    background: rgba(255, 255, 255, 0.97);
+    padding: 18px;
+    border-radius: 14px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.5);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+#myUL li a:hover {
+    transform: translateY(-4px);
+    background: white;
+    color: #0f766e;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.16);
+}
+
+.country-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f766e,
+            #0284c7
+        );
+
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* ================= NO RESULTS ================= */
+
+#noResults {
+    display: none;
+    background: white;
+    border-radius: 14px;
+    padding: 35px;
+    text-align: center;
+    color: #64748b;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+}
+
+#noResults h3 {
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+/* ================= MODAL ================= */
+
+#countryModal {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(2, 6, 23, 0.75);
+
+    z-index: 1000;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    backdrop-filter: blur(5px);
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 650px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: white;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.35);
+
+    animation: modalOpen 0.25s ease;
+}
+
+@keyframes modalOpen {
+
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+.modal-header {
+    background:
+        linear-gradient(
+            135deg,
+            #082f49,
+            #0f766e,
+            #0284c7
+        );
+
+    color: white;
+
+    padding: 30px;
+
+    position: relative;
+}
+
+.modal-header h2 {
+    font-size: 32px;
+    margin-bottom: 8px;
+    padding-right: 45px;
+}
+
+.modal-header p {
+    color: #dbeafe;
+}
+
+.close-button {
+    position: absolute;
+
+    top: 18px;
+    right: 18px;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.18);
+
+    color: white;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.close-button:hover {
+    background: rgba(255,255,255,0.30);
+    transform: rotate(90deg);
+}
+
+.modal-content {
+    padding: 25px;
+}
+
+.country-info-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.info-card {
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    padding: 18px;
+}
+
+.info-card .info-icon {
+    font-size: 25px;
+
+    margin-bottom: 8px;
+}
+
+.info-card h4 {
+    color: #64748b;
+
+    font-size: 13px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    margin-bottom: 6px;
+}
+
+.info-card p {
+    color: #1e293b;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    line-height: 1.4;
+}
+
+.dish-card {
+    background:
+        linear-gradient(
+            135deg,
+            #ecfeff,
+            #eff6ff
+        );
+
+    border: 1px solid #bae6fd;
+
+    border-radius: 16px;
+
+    padding: 22px;
+
+    margin-bottom: 20px;
+}
+
+.dish-card .dish-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: #0f766e;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.dish-card p {
+    color: #334155;
+
+    line-height: 1.6;
+}
+
+.description {
+    color: #475569;
+
+    line-height: 1.7;
+
+    font-size: 15px;
+}
+
+.description strong {
+    color: #1e293b;
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 13px;
+    margin-top: 35px;
+    padding-bottom: 20px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 850px) {
+
+    #myUL {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .header h1 {
+        font-size: 34px;
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .container {
+        width: 94%;
+        margin: 30px auto;
+    }
+
+    #myUL {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 30px;
+    }
+
+    .header p {
+        font-size: 15px;
+    }
+
+    .search-card {
+        padding: 18px;
+    }
+
+    .search-info {
+        font-size: 13px;
+    }
+
+    #myUL li a {
+        padding: 15px;
+    }
+
+    .country-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-header h2 {
+        font-size: 26px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <div class="globe">🌎</div>
+
+        <h1>Global Country Directory</h1>
+
+        <p>
+            Explore countries from around the world and discover
+            information about their culture, geography and food.
+        </p>
+
+    </header>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <section class="search-card">
+
+        <div class="search-wrapper">
+
+            <span class="search-icon">🔍</span>
+
+            <input
+                type="text"
+                id="myInput"
+                placeholder="Search for a country..."
+                title="Type a country name"
+                autocomplete="off"
+            >
+
+        </div>
+
+        <div class="search-info">
+
+            <span id="searchMessage">
+                Browse our global directory
+            </span>
+
+            <span>
+                <span id="countryCount">195</span>
+                countries
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= COUNTRY LIST ================= -->
+
+    <ul id="myUL"></ul>
+
+
+    <!-- ================= NO RESULTS ================= -->
+
+    <div id="noResults">
+
+        <h3>No countries found</h3>
+
+        <p>
+            Try searching with a different country name.
+        </p>
+
+    </div>
+
+
+    <!-- ================= COUNTRY MODAL ================= -->
+
+    <div id="countryModal">
+
+        <div class="modal-box">
+
+            <div class="modal-header">
+
+                <button
+                    class="close-button"
+                    onclick="closeCountry()"
+                    aria-label="Close country information"
+                >
+                    ×
+                </button>
+
+                <h2 id="modalCountryName">
+                    Country
+                </h2>
+
+                <p id="modalSubtitle">
+                    Country information
+                </p>
+
+            </div>
+
+            <div class="modal-content">
+
+                <div class="country-info-grid">
+
+                    <div class="info-card">
+
+                        <div class="info-icon">🏛️</div>
+
+                        <h4>Capital</h4>
+
+                        <p id="modalCapital"></p>
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <div class="info-icon">🌎</div>
+
+                        <h4>Continent</h4>
+
+                        <p id="modalContinent"></p>
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <div class="info-icon">👥</div>
+
+                        <h4>Population</h4>
+
+                        <p id="modalPopulation"></p>
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <div class="info-icon">💰</div>
+
+                        <h4>Currency</h4>
+
+                        <p id="modalCurrency"></p>
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <div class="info-icon">🗣️</div>
+
+                        <h4>Language</h4>
+
+                        <p id="modalLanguage"></p>
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <div class="info-icon">📍</div>
+
+                        <h4>Region</h4>
+
+                        <p id="modalRegion"></p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dish-card">
+
+                    <div class="dish-title">
+                        🍽️ National Dish
+                    </div>
+
+                    <p id="modalDish"></p>
+
+                </div>
+
+
+                <div class="description">
+
+                    <strong>About the country</strong>
+
+                    <p id="modalDescription"></p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        Global Country Directory &copy; 2026
+
+    </footer>
+
+</div>
+
+
+<script>
+
+/*
+========================================================
+COUNTRY DATABASE
+========================================================
+*/
+
+const countries = [
+
+{
+name:"Afghanistan",
+capital:"Kabul",
+continent:"Asia",
+population:"Approximately 43 million",
+currency:"Afghan afghani",
+language:"Dari and Pashto",
+region:"South Asia",
+dish:"Kabuli palaw",
+description:"Afghanistan is a mountainous country in Central and South Asia. It has a long history influenced by different cultures and civilizations."
+},
+
+{
+name:"Albania",
+capital:"Tirana",
+continent:"Europe",
+population:"Approximately 2.7 million",
+currency:"Albanian lek",
+language:"Albanian",
+region:"Southeastern Europe",
+dish:"Tavë kosi",
+description:"Albania is a country on the Balkan Peninsula with a coastline along the Adriatic and Ionian Seas."
+},
+
+{
+name:"Algeria",
+capital:"Algiers",
+continent:"Africa",
+population:"Approximately 47 million",
+currency:"Algerian dinar",
+language:"Arabic and Tamazight",
+region:"North Africa",
+dish:"Couscous",
+description:"Algeria is the largest country in Africa and is known for its Sahara Desert landscapes and Mediterranean coastline."
+},
+
+{
+name:"Andorra",
+capital:"Andorra la Vella",
+continent:"Europe",
+population:"Approximately 80,000",
+currency:"Euro",
+language:"Catalan",
+region:"Southern Europe",
+dish:"Escudella",
+description:"Andorra is a small mountainous country located in the Pyrenees between France and Spain."
+},
+
+{
+name:"Angola",
+capital:"Luanda",
+continent:"Africa",
+population:"Approximately 39 million",
+currency:"Angolan kwanza",
+language:"Portuguese",
+region:"Southern Africa",
+dish:"Muamba de galinha",
+description:"Angola is a large country on the western coast of southern Africa."
+},
+
+{
+name:"Antigua and Barbuda",
+capital:"St. John's",
+continent:"North America",
+population:"Approximately 94,000",
+currency:"Eastern Caribbean dollar",
+language:"English",
+region:"Caribbean",
+dish:"Fungee and pepperpot",
+description:"Antigua and Barbuda is a Caribbean country made up of two main islands and several smaller islands."
+},
+
+{
+name:"Argentina",
+capital:"Buenos Aires",
+continent:"South America",
+population:"Approximately 46 million",
+currency:"Argentine peso",
+language:"Spanish",
+region:"South America",
+dish:"Asado",
+description:"Argentina is a large South American country famous for its landscapes, football, tango and beef cuisine."
+},
+
+{
+name:"Armenia",
+capital:"Yerevan",
+continent:"Asia",
+population:"Approximately 3 million",
+currency:"Armenian dram",
+language:"Armenian",
+region:"Caucasus",
+dish:"Khorovats",
+description:"Armenia is a mountainous country in the South Caucasus with a very long history and cultural heritage."
+},
+
+{
+name:"Australia",
+capital:"Canberra",
+continent:"Oceania",
+population:"Approximately 27 million",
+currency:"Australian dollar",
+language:"English",
+region:"Oceania",
+dish:"Meat pie",
+description:"Australia is a large country and continent surrounded by the Indian and Pacific Oceans."
+},
+
+{
+name:"Austria",
+capital:"Vienna",
+continent:"Europe",
+population:"Approximately 9.2 million",
+currency:"Euro",
+language:"German",
+region:"Central Europe",
+dish:"Wiener schnitzel",
+description:"Austria is a landlocked Central European country known for the Alps, classical music and historic cities."
+},
+
+{
+name:"Azerbaijan",
+capital:"Baku",
+continent:"Asia",
+population:"Approximately 10 million",
+currency:"Azerbaijani manat",
+language:"Azerbaijani",
+region:"Caucasus",
+dish:"Plov",
+description:"Azerbaijan lies between Eastern Europe and Western Asia on the Caspian Sea."
+},
+
+{
+name:"Bahamas",
+capital:"Nassau",
+continent:"North America",
+population:"Approximately 400,000",
+currency:"Bahamian dollar",
+language:"English",
+region:"Caribbean",
+dish:"Conch salad",
+description:"The Bahamas is an island country in the Atlantic Ocean consisting of hundreds of islands and cays."
+},
+
+{
+name:"Bahrain",
+capital:"Manama",
+continent:"Asia",
+population:"Approximately 1.6 million",
+currency:"Bahraini dinar",
+language:"Arabic",
+region:"Middle East",
+dish:"Machboos",
+description:"Bahrain is an island country in the Persian Gulf and is one of the smaller countries in the Middle East."
+},
+
+{
+name:"Bangladesh",
+capital:"Dhaka",
+continent:"Asia",
+population:"Approximately 177 million",
+currency:"Bangladeshi taka",
+language:"Bengali",
+region:"South Asia",
+dish:"Hilsa curry",
+description:"Bangladesh is a densely populated South Asian country located around the delta of several major rivers."
+},
+
+{
+name:"Barbados",
+capital:"Bridgetown",
+continent:"North America",
+population:"Approximately 280,000",
+currency:"Barbadian dollar",
+language:"English",
+region:"Caribbean",
+dish:"Cou-cou and flying fish",
+description:"Barbados is an island country in the eastern Caribbean known for its beaches and cultural traditions."
+},
+
+{
+name:"Belarus",
+capital:"Minsk",
+continent:"Europe",
+population:"Approximately 9 million",
+currency:"Belarusian ruble",
+language:"Belarusian and Russian",
+region:"Eastern Europe",
+dish:"Draniki",
+description:"Belarus is a landlocked country in Eastern Europe known for its forests, lakes and plains."
+},
+
+{
+name:"Belgium",
+capital:"Brussels",
+continent:"Europe",
+population:"Approximately 11.8 million",
+currency:"Euro",
+language:"Dutch, French and German",
+region:"Western Europe",
+dish:"Moules-frites",
+description:"Belgium is a Western European country known for medieval cities, chocolate, waffles and its multilingual population."
+},
+
+{
+name:"Belize",
+capital:"Belmopan",
+continent:"North America",
+population:"Approximately 420,000",
+currency:"Belize dollar",
+language:"English",
+region:"Central America",
+dish:"Rice and beans with stew chicken",
+description:"Belize is a Central American country on the Caribbean Sea and is home to part of the Mesoamerican Barrier Reef."
+},
+
+{
+name:"Benin",
+capital:"Porto-Novo",
+continent:"Africa",
+population:"Approximately 15 million",
+currency:"West African CFA franc",
+language:"French",
+region:"West Africa",
+dish:"Amiwo",
+description:"Benin is a West African country located along the Gulf of Guinea."
+},
+
+{
+name:"Bhutan",
+capital:"Thimphu",
+continent:"Asia",
+population:"Approximately 800,000",
+currency:"Bhutanese ngultrum",
+language:"Dzongkha",
+region:"South Asia",
+dish:"Ema datshi",
+description:"Bhutan is a Himalayan kingdom known for its mountain landscapes and distinctive cultural traditions."
+},
+
+{
+name:"Bolivia",
+capital:"Sucre",
+continent:"South America",
+population:"Approximately 12 million",
+currency:"Bolivian boliviano",
+language:"Spanish and Indigenous languages",
+region:"South America",
+dish:"Salteñas",
+description:"Bolivia is a landlocked South American country with high-altitude landscapes including parts of the Andes."
+},
+
+{
+name:"Bosnia and Herzegovina",
+capital:"Sarajevo",
+continent:"Europe",
+population:"Approximately 3.2 million",
+currency:"Convertible mark",
+language:"Bosnian, Croatian and Serbian",
+region:"Southeastern Europe",
+dish:"Ćevapi",
+description:"Bosnia and Herzegovina is a Balkan country known for its mountains, rivers and diverse cultural heritage."
+},
+
+{
+name:"Botswana",
+capital:"Gaborone",
+continent:"Africa",
+population:"Approximately 2.6 million",
+currency:"Botswana pula",
+language:"English and Setswana",
+region:"Southern Africa",
+dish:"Seswaa",
+description:"Botswana is a landlocked country in southern Africa, much of which is covered by the Kalahari Desert."
+},
+
+{
+name:"Brazil",
+capital:"Brasília",
+continent:"South America",
+population:"Approximately 213 million",
+currency:"Brazilian real",
+language:"Portuguese",
+region:"South America",
+dish:"Feijoada",
+description:"Brazil is the largest country in South America and contains a large part of the Amazon rainforest."
+},
+
+{
+name:"Brunei",
+capital:"Bandar Seri Begawan",
+continent:"Asia",
+population:"Approximately 460,000",
+currency:"Brunei dollar",
+language:"Malay",
+region:"Southeast Asia",
+dish:"Ambuyat",
+description:"Brunei is a small country on the island of Borneo in Southeast Asia."
+},
+
+{
+name:"Bulgaria",
+capital:"Sofia",
+continent:"Europe",
+population:"Approximately 6.4 million",
+currency:"Bulgarian lev",
+language:"Bulgarian",
+region:"Southeastern Europe",
+dish:"Shopska salad",
+description:"Bulgaria is a Balkan country with mountains, plains and a coastline on the Black Sea."
+},
+
+{
+name:"Burkina Faso",
+capital:"Ouagadougou",
+continent:"Africa",
+population:"Approximately 24 million",
+currency:"West African CFA franc",
+language:"French and national languages",
+region:"West Africa",
+dish:"Riz gras",
+description:"Burkina Faso is a landlocked West African country known for its Sahel landscapes and cultural traditions."
+},
+
+{
+name:"Burundi",
+capital:"Gitega",
+continent:"Africa",
+population:"Approximately 14 million",
+currency:"Burundian franc",
+language:"Kirundi, French and English",
+region:"East Africa",
+dish:"Boko boko harees",
+description:"Burundi is a small landlocked country in East Africa located near Lake Tanganyika."
+},
+
+{
+name:"Cabo Verde",
+capital:"Praia",
+continent:"Africa",
+population:"Approximately 500,000",
+currency:"Cape Verdean escudo",
+language:"Portuguese",
+region:"West Africa",
+dish:"Cachupa",
+description:"Cabo Verde is an island country in the Atlantic Ocean off the western coast of Africa."
+},
+
+{
+name:"Cambodia",
+capital:"Phnom Penh",
+continent:"Asia",
+population:"Approximately 18 million",
+currency:"Cambodian riel",
+language:"Khmer",
+region:"Southeast Asia",
+dish:"Fish amok",
+description:"Cambodia is a Southeast Asian country famous for Angkor Wat and its rich Khmer cultural heritage."
+},
+
+{
+name:"Cameroon",
+capital:"Yaoundé",
+continent:"Africa",
+population:"Approximately 30 million",
+currency:"Central African CFA franc",
+language:"French and English",
+region:"Central Africa",
+dish:"Ndolé",
+description:"Cameroon is a Central African country with diverse landscapes ranging from rainforest to mountains."
+},
+
+{
+name:"Canada",
+capital:"Ottawa",
+continent:"North America",
+population:"Approximately 41 million",
+currency:"Canadian dollar",
+language:"English and French",
+region:"North America",
+dish:"Poutine",
+description:"Canada is the second-largest country in the world by area and is known for its vast forests, lakes and Arctic territory."
+},
+
+{
+name:"Central African Republic",
+capital:"Bangui",
+continent:"Africa",
+population:"Approximately 5.5 million",
+currency:"Central African CFA franc",
+language:"French and Sango",
+region:"Central Africa",
+dish:"Kanda",
+description:"The Central African Republic is a landlocked country in the centre of Africa."
+},
+
+{
+name:"Chad",
+capital:"N'Djamena",
+continent:"Africa",
+population:"Approximately 21 million",
+currency:"Central African CFA franc",
+language:"French and Arabic",
+region:"Central Africa",
+dish:"Boule",
+description:"Chad is a landlocked country in central Africa with landscapes ranging from desert to savannah."
+},
+
+{
+name:"Chile",
+capital:"Santiago",
+continent:"South America",
+population:"Approximately 20 million",
+currency:"Chilean peso",
+language:"Spanish",
+region:"South America",
+dish:"Pastel de choclo",
+description:"Chile is a long, narrow South American country stretching along the Pacific coast."
+},
+
+{
+name:"China",
+capital:"Beijing",
+continent:"Asia",
+population:"Approximately 1.4 billion",
+currency:"Renminbi",
+language:"Mandarin Chinese",
+region:"East Asia",
+dish:"Peking duck",
+description:"China is one of the world's largest countries and has a long history, diverse landscapes and many regional cuisines."
+},
+
+{
+name:"Colombia",
+capital:"Bogotá",
+continent:"South America",
+population:"Approximately 53 million",
+currency:"Colombian peso",
+language:"Spanish",
+region:"South America",
+dish:"Bandeja paisa",
+description:"Colombia is a South American country with Caribbean and Pacific coastlines, mountains and tropical forests."
+},
+
+{
+name:"Comoros",
+capital:"Moroni",
+continent:"Africa",
+population:"Approximately 900,000",
+currency:"Comorian franc",
+language:"Comorian, Arabic and French",
+region:"East Africa",
+dish:"Langouste à la vanille",
+description:"Comoros is an island nation in the Indian Ocean between Madagascar and mainland Africa."
+},
+
+{
+name:"Congo",
+capital:"Brazzaville",
+continent:"Africa",
+population:"Approximately 6 million",
+currency:"Central African CFA franc",
+language:"French",
+region:"Central Africa",
+dish:"Poulet moambé",
+description:"The Republic of the Congo is a Central African country with extensive rainforest."
+},
+
+{
+name:"Costa Rica",
+capital:"San José",
+continent:"North America",
+population:"Approximately 5.3 million",
+currency:"Costa Rican colón",
+language:"Spanish",
+region:"Central America",
+dish:"Gallo pinto",
+description:"Costa Rica is a Central American country known for rainforests, volcanoes and biodiversity."
+},
+
+{
+name:"Côte d'Ivoire",
+capital:"Yamoussoukro",
+continent:"Africa",
+population:"Approximately 32 million",
+currency:"West African CFA franc",
+language:"French",
+region:"West Africa",
+dish:"Attiéké",
+description:"Côte d'Ivoire is a West African country on the Gulf of Guinea and is a major producer of cocoa."
+},
+
+{
+name:"Croatia",
+capital:"Zagreb",
+continent:"Europe",
+population:"Approximately 3.8 million",
+currency:"Euro",
+language:"Croatian",
+region:"Southeastern Europe",
+dish:"Zagorski štrukli",
+description:"Croatia is a European country known for its Adriatic coastline, islands and historic cities."
+},
+
+{
+name:"Cuba",
+capital:"Havana",
+continent:"North America",
+population:"Approximately 11 million",
+currency:"Cuban peso",
+language:"Spanish",
+region:"Caribbean",
+dish:"Ropa vieja",
+description:"Cuba is the largest island in the Caribbean and is known for its music, culture and historic cities."
+},
+
+{
+name:"Cyprus",
+capital:"Nicosia",
+continent:"Asia",
+population:"Approximately 1.4 million",
+currency:"Euro",
+language:"Greek and Turkish",
+region:"Eastern Mediterranean",
+dish:"Halloumi",
+description:"Cyprus is an island in the eastern Mediterranean Sea with a long and diverse history."
+},
+
+{
+name:"Czechia",
+capital:"Prague",
+continent:"Europe",
+population:"Approximately 11 million",
+currency:"Czech koruna",
+language:"Czech",
+region:"Central Europe",
+dish:"Svíčková",
+description:"Czechia is a landlocked Central European country known for historic towns, castles and Prague."
+},
+
+{
+name:"Democratic Republic of the Congo",
+capital:"Kinshasa",
+continent:"Africa",
+population:"Approximately 113 million",
+currency:"Congolese franc",
+language:"French",
+region:"Central Africa",
+dish:"Poulet à la moambé",
+description:"The Democratic Republic of the Congo is a large Central African country containing extensive rainforest and the Congo River."
+},
+
+{
+name:"Denmark",
+capital:"Copenhagen",
+continent:"Europe",
+population:"Approximately 6 million",
+currency:"Danish krone",
+language:"Danish",
+region:"Northern Europe",
+dish:"Stegt flæsk",
+description:"Denmark is a Nordic country made up of the Jutland peninsula and many islands."
+},
+
+{
+name:"Djibouti",
+capital:"Djibouti City",
+continent:"Africa",
+population:"Approximately 1.2 million",
+currency:"Djiboutian franc",
+language:"French and Arabic",
+region:"Horn of Africa",
+dish:"Skoudehkaris",
+description:"Djibouti is a small country in the Horn of Africa located near the Red Sea."
+},
+
+{
+name:"Dominica",
+capital:"Roseau",
+continent:"North America",
+population:"Approximately 70,000",
+currency:"Eastern Caribbean dollar",
+language:"English",
+region:"Caribbean",
+dish:"Mountain chicken",
+description:"Dominica is a mountainous Caribbean island known for rainforests, rivers and volcanic landscapes."
+},
+
+{
+name:"Dominican Republic",
+capital:"Santo Domingo",
+continent:"North America",
+population:"Approximately 11 million",
+currency:"Dominican peso",
+language:"Spanish",
+region:"Caribbean",
+dish:"La bandera",
+description:"The Dominican Republic occupies the eastern part of the island of Hispaniola in the Caribbean."
+},
+
+{
+name:"Ecuador",
+capital:"Quito",
+continent:"South America",
+population:"Approximately 18 million",
+currency:"US dollar",
+language:"Spanish",
+region:"South America",
+dish:"Encebollado",
+description:"Ecuador is a South American country crossed by the Equator and includes part of the Andes and the Galápagos Islands."
+},
+
+{
+name:"Egypt",
+capital:"Cairo",
+continent:"Africa",
+population:"Approximately 118 million",
+currency:"Egyptian pound",
+language:"Arabic",
+region:"North Africa",
+dish:"Koshari",
+description:"Egypt is a North African country centred around the Nile River and is famous for its ancient civilization."
+},
+
+{
+name:"El Salvador",
+capital:"San Salvador",
+continent:"North America",
+population:"Approximately 6.4 million",
+currency:"US dollar",
+language:"Spanish",
+region:"Central America",
+dish:"Pupusas",
+description:"El Salvador is the smallest country in mainland Central America and has a Pacific coastline."
+},
+
+{
+name:"Equatorial Guinea",
+capital:"Malabo",
+continent:"Africa",
+population:"Approximately 1.9 million",
+currency:"Central African CFA franc",
+language:"Spanish, French and Portuguese",
+region:"Central Africa",
+dish:"Succotash",
+description:"Equatorial Guinea is a Central African country made up of mainland territory and several islands."
+},
+
+{
+name:"Eritrea",
+capital:"Asmara",
+continent:"Africa",
+population:"Approximately 3.5 million",
+currency:"Eritrean nakfa",
+language:"Tigrinya, Arabic and English",
+region:"Horn of Africa",
+dish:"Zigni",
+description:"Eritrea is located on the Red Sea in the Horn of Africa."
+},
+
+{
+name:"Estonia",
+capital:"Tallinn",
+continent:"Europe",
+population:"Approximately 1.4 million",
+currency:"Euro",
+language:"Estonian",
+region:"Northern Europe",
+dish:"Verivorst",
+description:"Estonia is a Baltic country in Northern Europe known for forests, islands and its digital society."
+},
+
+{
+name:"Eswatini",
+capital:"Mbabane",
+continent:"Africa",
+population:"Approximately 1.3 million",
+currency:"Swazi lilangeni",
+language:"Swazi and English",
+region:"Southern Africa",
+dish:"Emahewu",
+description:"Eswatini is a small landlocked kingdom in southern Africa."
+},
+
+{
+name:"Ethiopia",
+capital:"Addis Ababa",
+continent:"Africa",
+population:"Approximately 135 million",
+currency:"Ethiopian birr",
+language:"Amharic and other languages",
+region:"East Africa",
+dish:"Doro wat",
+description:"Ethiopia is an East African country with a long history and distinctive cuisine."
+},
+
+{
+name:"Fiji",
+capital:"Suva",
+continent:"Oceania",
+population:"Approximately 940,000",
+currency:"Fijian dollar",
+language:"English, Fijian and Fiji Hindi",
+region:"Pacific",
+dish:"Kokoda",
+description:"Fiji is an island country in the South Pacific made up of more than 300 islands."
+},
+
+{
+name:"Finland",
+capital:"Helsinki",
+continent:"Europe",
+population:"Approximately 5.6 million",
+currency:"Euro",
+language:"Finnish and Swedish",
+region:"Northern Europe",
+dish:"Karelian pasty",
+description:"Finland is a Nordic country known for its forests, lakes and northern landscapes."
+},
+
+{
+name:"France",
+capital:"Paris",
+continent:"Europe",
+population:"Approximately 69 million",
+currency:"Euro",
+language:"French",
+region:"Western Europe",
+dish:"Coq au vin",
+description:"France is a Western European country famous for its history, art, architecture and cuisine."
+},
+
+{
+name:"Gabon",
+capital:"Libreville",
+continent:"Africa",
+population:"Approximately 2.6 million",
+currency:"Central African CFA franc",
+language:"French",
+region:"Central Africa",
+dish:"Poulet nyembwe",
+description:"Gabon is a Central African country with a large amount of tropical rainforest."
+},
+
+{
+name:"Gambia",
+capital:"Banjul",
+continent:"Africa",
+population:"Approximately 2.9 million",
+currency:"Gambian dalasi",
+language:"English",
+region:"West Africa",
+dish:"Domoda",
+description:"The Gambia is a small West African country largely surrounded by Senegal and centred around the Gambia River."
+},
+
+{
+name:"Georgia",
+capital:"Tbilisi",
+continent:"Asia",
+population:"Approximately 3.7 million",
+currency:"Georgian lari",
+language:"Georgian",
+region:"Caucasus",
+dish:"Khachapuri",
+description:"Georgia is located in the Caucasus between Europe and Asia and is known for its mountains and cuisine."
+},
+
+{
+name:"Germany",
+capital:"Berlin",
+continent:"Europe",
+population:"Approximately 84 million",
+currency:"Euro",
+language:"German",
+region:"Central Europe",
+dish:"Sauerbraten",
+description:"Germany is a major Central European country known for its historic cities, forests and cultural heritage."
+},
+
+{
+name:"Ghana",
+capital:"Accra",
+continent:"Africa",
+population:"Approximately 35 million",
+currency:"Ghanaian cedi",
+language:"English",
+region:"West Africa",
+dish:"Fufu and soup",
+description:"Ghana is a West African country on the Gulf of Guinea known for its cultural heritage and cocoa production."
+},
+
+{
+name:"Greece",
+capital:"Athens",
+continent:"Europe",
+population:"Approximately 10 million",
+currency:"Euro",
+language:"Greek",
+region:"Southern Europe",
+dish:"Moussaka",
+description:"Greece is a Mediterranean country known for its ancient history, islands and distinctive cuisine."
+},
+
+{
+name:"Grenada",
+capital:"St. George's",
+continent:"North America",
+population:"Approximately 120,000",
+currency:"Eastern Caribbean dollar",
+language:"English",
+region:"Caribbean",
+dish:"Oil down",
+description:"Grenada is a Caribbean island country known for its spices and tropical scenery."
+},
+
+{
+name:"Guatemala",
+capital:"Guatemala City",
+continent:"North America",
+population:"Approximately 19 million",
+currency:"Guatemalan quetzal",
+language:"Spanish and Indigenous languages",
+region:"Central America",
+dish:"Pepián",
+description:"Guatemala is a Central American country with Maya heritage, volcanoes and tropical forests."
+},
+
+{
+name:"Guinea",
+capital:"Conakry",
+continent:"Africa",
+population:"Approximately 15 million",
+currency:"Guinean franc",
+language:"French",
+region:"West Africa",
+dish:"Poulet yassa",
+description:"Guinea is a West African country with Atlantic coastline and mountainous interior regions."
+},
+
+{
+name:"Guinea-Bissau",
+capital:"Bissau",
+continent:"Africa",
+population:"Approximately 2.3 million",
+currency:"West African CFA franc",
+language:"Portuguese",
+region:"West Africa",
+dish:"Caldo de mancarra",
+description:"Guinea-Bissau is a small West African country on the Atlantic coast."
+},
+
+{
+name:"Guyana",
+capital:"Georgetown",
+continent:"South America",
+population:"Approximately 840,000",
+currency:"Guyanese dollar",
+language:"English",
+region:"South America",
+dish:"Pepperpot",
+description:"Guyana is located on the northern coast of South America and has extensive rainforest."
+},
+
+{
+name:"Haiti",
+capital:"Port-au-Prince",
+continent:"North America",
+population:"Approximately 12 million",
+currency:"Haitian gourde",
+language:"Haitian Creole and French",
+region:"Caribbean",
+dish:"Soup joumou",
+description:"Haiti occupies the western part of the island of Hispaniola in the Caribbean."
+},
+
+{
+name:"Honduras",
+capital:"Tegucigalpa",
+continent:"North America",
+population:"Approximately 11 million",
+currency:"Honduran lempira",
+language:"Spanish",
+region:"Central America",
+dish:"Baleadas",
+description:"Honduras is a Central American country with Caribbean and Pacific coastlines."
+},
+
+{
+name:"Hungary",
+capital:"Budapest",
+continent:"Europe",
+population:"Approximately 9.5 million",
+currency:"Hungarian forint",
+language:"Hungarian",
+region:"Central Europe",
+dish:"Goulash",
+description:"Hungary is a landlocked Central European country known for Budapest, thermal baths and its cuisine."
+},
+
+{
+name:"Iceland",
+capital:"Reykjavík",
+continent:"Europe",
+population:"Approximately 400,000",
+currency:"Icelandic króna",
+language:"Icelandic",
+region:"Northern Europe",
+dish:"Hákarl",
+description:"Iceland is a Nordic island country known for volcanoes, glaciers, geothermal activity and dramatic landscapes."
+},
+
+{
+name:"India",
+capital:"New Delhi",
+continent:"Asia",
+population:"Approximately 1.5 billion",
+currency:"Indian rupee",
+language:"Hindi and English, plus many regional languages",
+region:"South Asia",
+dish:"Biryani",
+description:"India is a large and culturally diverse South Asian country with many languages, religions and regional cuisines."
+},
+
+{
+name:"Indonesia",
+capital:"Jakarta",
+continent:"Asia",
+population:"Approximately 288 million",
+currency:"Indonesian rupiah",
+language:"Indonesian",
+region:"Southeast Asia",
+dish:"Nasi goreng",
+description:"Indonesia is a large Southeast Asian archipelago made up of thousands of islands."
+},
+
+{
+name:"Iran",
+capital:"Tehran",
+continent:"Asia",
+population:"Approximately 93 million",
+currency:"Iranian rial",
+language:"Persian",
+region:"Middle East",
+dish:"Chelo kebab",
+description:"Iran is a country in Western Asia with a long history and diverse landscapes."
+},
+
+{
+name:"Iraq",
+capital:"Baghdad",
+continent:"Asia",
+population:"Approximately 48 million",
+currency:"Iraqi dinar",
+language:"Arabic and Kurdish",
+region:"Middle East",
+dish:"Masgouf",
+description:"Iraq is a Middle Eastern country located between the Tigris and Euphrates rivers."
+},
+
+{
+name:"Ireland",
+capital:"Dublin",
+continent:"Europe",
+population:"Approximately 5.5 million",
+currency:"Euro",
+language:"Irish and English",
+region:"Western Europe",
+dish:"Irish stew",
+description:"Ireland is an island country in northwestern Europe known for its green landscapes and rich cultural traditions."
+},
+
+{
+name:"Israel",
+capital:"Jerusalem",
+continent:"Asia",
+population:"Approximately 10 million",
+currency:"Israeli new shekel",
+language:"Hebrew and Arabic",
+region:"Middle East",
+dish:"Falafel",
+description:"Israel is a country on the eastern Mediterranean coast with a diverse population and extensive historical significance."
+},
+
+{
+name:"Italy",
+capital:"Rome",
+continent:"Europe",
+population:"Approximately 59 million",
+currency:"Euro",
+language:"Italian",
+region:"Southern Europe",
+dish:"Pizza",
+description:"Italy is a Mediterranean country famous for its ancient history, art, architecture and cuisine."
+},
+
+{
+name:"Jamaica",
+capital:"Kingston",
+continent:"North America",
+population:"Approximately 2.8 million",
+currency:"Jamaican dollar",
+language:"English",
+region:"Caribbean",
+dish:"Ackee and saltfish",
+description:"Jamaica is a Caribbean island known for reggae music, athletics, beaches and distinctive cuisine."
+},
+
+{
+name:"Japan",
+capital:"Tokyo",
+continent:"Asia",
+population:"Approximately 123 million",
+currency:"Japanese yen",
+language:"Japanese",
+region:"East Asia",
+dish:"Sushi",
+description:"Japan is an East Asian island country known for its technology, culture, history and cuisine."
+},
+
+{
+name:"Jordan",
+capital:"Amman",
+continent:"Asia",
+population:"Approximately 12 million",
+currency:"Jordanian dinar",
+language:"Arabic",
+region:"Middle East",
+dish:"Mansaf",
+description:"Jordan is a Middle Eastern country known for ancient sites including Petra and its desert landscapes."
+},
+
+{
+name:"Kazakhstan",
+capital:"Astana",
+continent:"Asia",
+population:"Approximately 21 million",
+currency:"Kazakhstani tenge",
+language:"Kazakh and Russian",
+region:"Central Asia",
+dish:"Beshbarmak",
+description:"Kazakhstan is a large landlocked country in Central Asia with extensive steppe landscapes."
+},
+
+{
+name:"Kenya",
+capital:"Nairobi",
+continent:"Africa",
+population:"Approximately 57 million",
+currency:"Kenyan shilling",
+language:"Swahili and English",
+region:"East Africa",
+dish:"Ugali",
+description:"Kenya is an East African country known for its wildlife, savannahs, mountains and Indian Ocean coastline."
+},
+
+{
+name:"Kiribati",
+capital:"South Tarawa",
+continent:"Oceania",
+population:"Approximately 140,000",
+currency:"Australian dollar",
+language:"Gilbertese and English",
+region:"Pacific",
+dish:"Palusami",
+description:"Kiribati is a Pacific island nation made up of many low-lying atolls."
+},
+
+{
+name:"Kuwait",
+capital:"Kuwait City",
+continent:"Asia",
+population:"Approximately 5 million",
+currency:"Kuwaiti dinar",
+language:"Arabic",
+region:"Middle East",
+dish:"Machboos",
+description:"Kuwait is a small country on the Persian Gulf with a major oil-based economy."
+},
+
+{
+name:"Kyrgyzstan",
+capital:"Bishkek",
+continent:"Asia",
+population:"Approximately 7.4 million",
+currency:"Kyrgyzstani som",
+language:"Kyrgyz and Russian",
+region:"Central Asia",
+dish:"Beshbarmak",
+description:"Kyrgyzstan is a mountainous Central Asian country known for its lakes and nomadic traditions."
+},
+
+{
+name:"Laos",
+capital:"Vientiane",
+continent:"Asia",
+population:"Approximately 8 million",
+currency:"Lao kip",
+language:"Lao",
+region:"Southeast Asia",
+dish:"Laap",
+description:"Laos is a landlocked Southeast Asian country crossed by the Mekong River."
+},
+
+{
+name:"Latvia",
+capital:"Riga",
+continent:"Europe",
+population:"Approximately 1.9 million",
+currency:"Euro",
+language:"Latvian",
+region:"Northern Europe",
+dish:"Grey peas with bacon",
+description:"Latvia is one of the Baltic states on the eastern coast of the Baltic Sea."
+},
+
+{
+name:"Lebanon",
+capital:"Beirut",
+continent:"Asia",
+population:"Approximately 5.8 million",
+currency:"Lebanese pound",
+language:"Arabic",
+region:"Middle East",
+dish:"Kibbeh",
+description:"Lebanon is a small Mediterranean country known for its mountains, coastline and diverse cuisine."
+},
+
+{
+name:"Lesotho",
+capital:"Maseru",
+continent:"Africa",
+population:"Approximately 2.4 million",
+currency:"Lesotho loti",
+language:"Sesotho and English",
+region:"Southern Africa",
+dish:"Papa with moroho",
+description:"Lesotho is a mountainous country completely surrounded by South Africa."
+},
+
+{
+name:"Liberia",
+capital:"Monrovia",
+continent:"Africa",
+population:"Approximately 5.7 million",
+currency:"Liberian dollar",
+language:"English",
+region:"West Africa",
+dish:"Jollof rice",
+description:"Liberia is a West African country on the Atlantic coast."
+},
+
+{
+name:"Libya",
+capital:"Tripoli",
+continent:"Africa",
+population:"Approximately 7.5 million",
+currency:"Libyan dinar",
+language:"Arabic",
+region:"North Africa",
+dish:"Cuscus bil-bosla",
+description:"Libya is a North African country with a large Sahara Desert region and Mediterranean coastline."
+},
+
+{
+name:"Liechtenstein",
+capital:"Vaduz",
+continent:"Europe",
+population:"Approximately 40,000",
+currency:"Swiss franc",
+language:"German",
+region:"Central Europe",
+dish:"Käsknöpfle",
+description:"Liechtenstein is a small landlocked Alpine country between Switzerland and Austria."
+},
+
+{
+name:"Lithuania",
+capital:"Vilnius",
+continent:"Europe",
+population:"Approximately 2.8 million",
+currency:"Euro",
+language:"Lithuanian",
+region:"Northern Europe",
+dish:"Cepelinai",
+description:"Lithuania is the southernmost of the Baltic states."
+},
+
+{
+name:"Luxembourg",
+capital:"Luxembourg City",
+continent:"Europe",
+population:"Approximately 680,000",
+currency:"Euro",
+language:"Luxembourgish, French and German",
+region:"Western Europe",
+dish:"Judd mat Gaardebounen",
+description:"Luxembourg is a small landlocked country in Western Europe."
+},
+
+{
+name:"Madagascar",
+capital:"Antananarivo",
+continent:"Africa",
+population:"Approximately 33 million",
+currency:"Malagasy ariary",
+language:"Malagasy and French",
+region:"East Africa",
+dish:"Romazava",
+description:"Madagascar is a large island country off the southeastern coast of Africa known for unique wildlife."
+},
+
+{
+name:"Malawi",
+capital:"Lilongwe",
+continent:"Africa",
+population:"Approximately 22 million",
+currency:"Malawian kwacha",
+language:"English and Chichewa",
+region:"East Africa",
+dish:"Nsima",
+description:"Malawi is a landlocked country in southeastern Africa known for Lake Malawi."
+},
+
+{
+name:"Malaysia",
+capital:"Kuala Lumpur",
+continent:"Asia",
+population:"Approximately 36 million",
+currency:"Malaysian ringgit",
+language:"Malay",
+region:"Southeast Asia",
+dish:"Nasi lemak",
+description:"Malaysia is a Southeast Asian country split between the Malay Peninsula and the island of Borneo."
+},
+
+{
+name:"Maldives",
+capital:"Malé",
+continent:"Asia",
+population:"Approximately 530,000",
+currency:"Maldivian rufiyaa",
+language:"Dhivehi",
+region:"South Asia",
+dish:"Mas huni",
+description:"The Maldives is an island nation in the Indian Ocean made up of many coral atolls."
+},
+
+{
+name:"Mali",
+capital:"Bamako",
+continent:"Africa",
+population:"Approximately 25 million",
+currency:"West African CFA franc",
+language:"French and national languages",
+region:"West Africa",
+dish:"Tiguadege na",
+description:"Mali is a large landlocked West African country with important historic cities such as Timbuktu."
+},
+
+{
+name:"Malta",
+capital:"Valletta",
+continent:"Europe",
+population:"Approximately 570,000",
+currency:"Euro",
+language:"Maltese and English",
+region:"Southern Europe",
+dish:"Stuffat tal-fenek",
+description:"Malta is a small Mediterranean island country south of Italy."
+},
+
+{
+name:"Marshall Islands",
+capital:"Majuro",
+continent:"Oceania",
+population:"Approximately 37,000",
+currency:"US dollar",
+language:"Marshallese and English",
+region:"Pacific",
+dish:"Barramundi cod",
+description:"The Marshall Islands is a Pacific island country made up of many atolls and islands."
+},
+
+{
+name:"Mauritania",
+capital:"Nouakchott",
+continent:"Africa",
+population:"Approximately 5.4 million",
+currency:"Mauritanian ouguiya",
+language:"Arabic",
+region:"West Africa",
+dish:"Thieboudienne",
+description:"Mauritania is a largely desert country in northwest Africa."
+},
+
+{
+name:"Mauritius",
+capital:"Port Louis",
+continent:"Africa",
+population:"Approximately 1.3 million",
+currency:"Mauritian rupee",
+language:"English and French",
+region:"Indian Ocean",
+dish:"Dholl puri",
+description:"Mauritius is an island country in the Indian Ocean known for beaches and multicultural traditions."
+},
+
+{
+name:"Mexico",
+capital:"Mexico City",
+continent:"North America",
+population:"Approximately 132 million",
+currency:"Mexican peso",
+language:"Spanish and Indigenous languages",
+region:"North America",
+dish:"Mole poblano",
+description:"Mexico is a large North American country with a rich Indigenous and Spanish-influenced culture."
+},
+
+{
+name:"Micronesia",
+capital:"Palikir",
+continent:"Oceania",
+population:"Approximately 100,000",
+currency:"US dollar",
+language:"English and local languages",
+region:"Pacific",
+dish:"Pihlohlo mwo",
+description:"The Federated States of Micronesia is a Pacific country made up of hundreds of islands."
+},
+
+{
+name:"Moldova",
+capital:"Chișinău",
+continent:"Europe",
+population:"Approximately 2.4 million",
+currency:"Moldovan leu",
+language:"Romanian",
+region:"Eastern Europe",
+dish:"Mămăligă",
+description:"Moldova is a landlocked Eastern European country known for vineyards and rolling countryside."
+},
+
+{
+name:"Monaco",
+capital:"Monaco",
+continent:"Europe",
+population:"Approximately 39,000",
+currency:"Euro",
+language:"French",
+region:"Southern Europe",
+dish:"Barbagiuan",
+description:"Monaco is a very small city-state on the Mediterranean coast of the French Riviera."
+},
+
+{
+name:"Mongolia",
+capital:"Ulaanbaatar",
+continent:"Asia",
+population:"Approximately 3.6 million",
+currency:"Mongolian tögrög",
+language:"Mongolian",
+region:"East Asia",
+dish:"Buuz",
+description:"Mongolia is a landlocked country known for its vast steppe, deserts and nomadic traditions."
+},
+
+{
+name:"Montenegro",
+capital:"Podgorica",
+continent:"Europe",
+population:"Approximately 620,000",
+currency:"Euro",
+language:"Montenegrin",
+region:"Southeastern Europe",
+dish:"Njeguški pršut",
+description:"Montenegro is a Balkan country known for its Adriatic coastline and mountainous landscape."
+},
+
+{
+name:"Morocco",
+capital:"Rabat",
+continent:"Africa",
+population:"Approximately 38 million",
+currency:"Moroccan dirham",
+language:"Arabic and Amazigh",
+region:"North Africa",
+dish:"Couscous",
+description:"Morocco is a North African country known for its markets, mountains, deserts and Atlantic and Mediterranean coasts."
+},
+
+{
+name:"Mozambique",
+capital:"Maputo",
+continent:"Africa",
+population:"Approximately 36 million",
+currency:"Mozambican metical",
+language:"Portuguese",
+region:"Southeastern Africa",
+dish:"Matapa",
+description:"Mozambique is a southeastern African country with a long Indian Ocean coastline."
+},
+
+{
+name:"Myanmar",
+capital:"Naypyidaw",
+continent:"Asia",
+population:"Approximately 55 million",
+currency:"Myanmar kyat",
+language:"Burmese",
+region:"Southeast Asia",
+dish:"Mohinga",
+description:"Myanmar is a Southeast Asian country with a long history and diverse ethnic and cultural traditions."
+},
+
+{
+name:"Namibia",
+capital:"Windhoek",
+continent:"Africa",
+population:"Approximately 3.1 million",
+currency:"Namibian dollar",
+language:"English",
+region:"Southern Africa",
+dish:"Kapana",
+description:"Namibia is a southern African country known for the Namib Desert and dramatic landscapes."
+},
+
+{
+name:"Nauru",
+capital:"Yaren",
+continent:"Oceania",
+population:"Approximately 12,000",
+currency:"Australian dollar",
+language:"Nauruan and English",
+region:"Pacific",
+dish:"Coconut fish",
+description:"Nauru is one of the world's smallest countries and is a small island in the Pacific Ocean."
+},
+
+{
+name:"Nepal",
+capital:"Kathmandu",
+continent:"Asia",
+population:"Approximately 30 million",
+currency:"Nepalese rupee",
+language:"Nepali",
+region:"South Asia",
+dish:"Dal bhat",
+description:"Nepal is a Himalayan country home to Mount Everest and many other high mountains."
+},
+
+{
+name:"Netherlands",
+capital:"Amsterdam",
+continent:"Europe",
+population:"Approximately 18 million",
+currency:"Euro",
+language:"Dutch",
+region:"Western Europe",
+dish:"Stamppot",
+description:"The Netherlands is a low-lying Western European country famous for canals, cycling and tulips."
+},
+
+{
+name:"New Zealand",
+capital:"Wellington",
+continent:"Oceania",
+population:"Approximately 5.4 million",
+currency:"New Zealand dollar",
+language:"English and Māori",
+region:"Pacific",
+dish:"Hāngi",
+description:"New Zealand is an island country in the southwestern Pacific Ocean made up mainly of two large islands."
+},
+
+{
+name:"Nicaragua",
+capital:"Managua",
+continent:"North America",
+population:"Approximately 7 million",
+currency:"Nicaraguan córdoba",
+language:"Spanish",
+region:"Central America",
+dish:"Gallo pinto",
+description:"Nicaragua is the largest country in Central America and has Pacific and Caribbean coastlines."
+},
+
+{
+name:"Niger",
+capital:"Niamey",
+continent:"Africa",
+population:"Approximately 28 million",
+currency:"West African CFA franc",
+language:"French and national languages",
+region:"West Africa",
+dish:"Dambou",
+description:"Niger is a landlocked West African country, much of which lies within the Sahara Desert."
+},
+
+{
+name:"Nigeria",
+capital:"Abuja",
+continent:"Africa",
+population:"Approximately 242 million",
+currency:"Nigerian naira",
+language:"English and many local languages",
+region:"West Africa",
+dish:"Jollof rice",
+description:"Nigeria is one of Africa's most populous countries and has a highly diverse culture and economy."
+},
+
+{
+name:"North Korea",
+capital:"Pyongyang",
+continent:"Asia",
+population:"Approximately 26 million",
+currency:"North Korean won",
+language:"Korean",
+region:"East Asia",
+dish:"Naengmyeon",
+description:"North Korea occupies the northern part of the Korean Peninsula in East Asia."
+},
+
+{
+name:"North Macedonia",
+capital:"Skopje",
+continent:"Europe",
+population:"Approximately 1.8 million",
+currency:"Macedonian denar",
+language:"Macedonian and Albanian",
+region:"Southeastern Europe",
+dish:"Tavče gravče",
+description:"North Macedonia is a landlocked Balkan country with mountains and historic cultural sites."
+},
+
+{
+name:"Norway",
+capital:"Oslo",
+continent:"Europe",
+population:"Approximately 5.6 million",
+currency:"Norwegian krone",
+language:"Norwegian",
+region:"Northern Europe",
+dish:"Fårikål",
+description:"Norway is a Nordic country known for fjords, mountains and its long northern coastline."
+},
+
+{
+name:"Oman",
+capital:"Muscat",
+continent:"Asia",
+population:"Approximately 5.6 million",
+currency:"Omani rial",
+language:"Arabic",
+region:"Middle East",
+dish:"Shuwa",
+description:"Oman is a country on the southeastern Arabian Peninsula known for deserts, mountains and coastline."
+},
+
+{
+name:"Pakistan",
+capital:"Islamabad",
+continent:"Asia",
+population:"Approximately 260 million",
+currency:"Pakistani rupee",
+language:"Urdu and English",
+region:"South Asia",
+dish:"Biryani",
+description:"Pakistan is a South Asian country stretching from the Arabian Sea to the Himalayan and Karakoram regions."
+},
+
+{
+name:"Palau",
+capital:"Ngerulmud",
+continent:"Oceania",
+population:"Approximately 18,000",
+currency:"US dollar",
+language:"Palauan and English",
+region:"Pacific",
+dish:"Ulkoy",
+description:"Palau is an island country in the western Pacific known for its marine environment and coral reefs."
+},
+
+{
+name:"Palestine",
+capital:"Ramallah",
+continent:"Asia",
+population:"Approximately 5.5 million",
+currency:"Israeli new shekel and other currencies",
+language:"Arabic",
+region:"Middle East",
+dish:"Musakhan",
+description:"Palestine refers to territories in the eastern Mediterranean region with a long and complex history."
+},
+
+{
+name:"Panama",
+capital:"Panama City",
+continent:"North America",
+population:"Approximately 4.6 million",
+currency:"Balboa and US dollar",
+language:"Spanish",
+region:"Central America",
+dish:"Sancocho",
+description:"Panama connects North and South America and is famous for the Panama Canal."
+},
+
+{
+name:"Papua New Guinea",
+capital:"Port Moresby",
+continent:"Oceania",
+population:"Approximately 11 million",
+currency:"Papua New Guinean kina",
+language:"English, Tok Pisin and Hiri Motu",
+region:"Pacific",
+dish:"Mumu",
+description:"Papua New Guinea occupies the eastern half of New Guinea and contains enormous cultural and biological diversity."
+},
+
+{
+name:"Paraguay",
+capital:"Asunción",
+continent:"South America",
+population:"Approximately 7 million",
+currency:"Paraguayan guaraní",
+language:"Spanish and Guaraní",
+region:"South America",
+dish:"Sopa paraguaya",
+description:"Paraguay is a landlocked country in the centre of South America."
+},
+
+{
+name:"Peru",
+capital:"Lima",
+continent:"South America",
+population:"Approximately 34 million",
+currency:"Peruvian sol",
+language:"Spanish, Quechua and Aymara",
+region:"South America",
+dish:"Ceviche",
+description:"Peru is a South American country known for the Andes, Amazon rainforest and ancient civilizations."
+},
+
+{
+name:"Philippines",
+capital:"Manila",
+continent:"Asia",
+population:"Approximately 117 million",
+currency:"Philippine peso",
+language:"Filipino and English",
+region:"Southeast Asia",
+dish:"Adobo",
+description:"The Philippines is an archipelago in Southeast Asia made up of thousands of islands."
+},
+
+{
+name:"Poland",
+capital:"Warsaw",
+continent:"Europe",
+population:"Approximately 37 million",
+currency:"Polish złoty",
+language:"Polish",
+region:"Central Europe",
+dish:"Pierogi",
+description:"Poland is a Central European country known for historic cities, forests and its rich cultural heritage."
+},
+
+{
+name:"Portugal",
+capital:"Lisbon",
+continent:"Europe",
+population:"Approximately 10.7 million",
+currency:"Euro",
+language:"Portuguese",
+region:"Southern Europe",
+dish:"Bacalhau",
+description:"Portugal is a European country on the Iberian Peninsula with a long Atlantic coastline."
+},
+
+{
+name:"Qatar",
+capital:"Doha",
+continent:"Asia",
+population:"Approximately 3.2 million",
+currency:"Qatari riyal",
+language:"Arabic",
+region:"Middle East",
+dish:"Machboos",
+description:"Qatar is a small peninsula country on the Arabian Gulf."
+},
+
+{
+name:"Romania",
+capital:"Bucharest",
+continent:"Europe",
+population:"Approximately 19 million",
+currency:"Romanian leu",
+language:"Romanian",
+region:"Eastern Europe",
+dish:"Sarmale",
+description:"Romania is an Eastern European country known for the Carpathian Mountains, forests and historic towns."
+},
+
+{
+name:"Russia",
+capital:"Moscow",
+continent:"Europe and Asia",
+population:"Approximately 143 million",
+currency:"Russian ruble",
+language:"Russian",
+region:"Eastern Europe and Northern Asia",
+dish:"Pelmeni",
+description:"Russia is the world's largest country by area and stretches across Europe and Asia."
+},
+
+{
+name:"Rwanda",
+capital:"Kigali",
+continent:"Africa",
+population:"Approximately 15 million",
+currency:"Rwandan franc",
+language:"Kinyarwanda, English and French",
+region:"East Africa",
+dish:"Brochettes",
+description:"Rwanda is a small, mountainous East African country often called the land of a thousand hills."
+},
+
+{
+name:"Saint Kitts and Nevis",
+capital:"Basseterre",
+continent:"North America",
+population:"Approximately 47,000",
+currency:"Eastern Caribbean dollar",
+language:"English",
+region:"Caribbean",
+dish:"Goat water stew",
+description:"Saint Kitts and Nevis is a two-island Caribbean country."
+},
+
+{
+name:"Saint Lucia",
+capital:"Castries",
+continent:"North America",
+population:"Approximately 180,000",
+currency:"Eastern Caribbean dollar",
+language:"English",
+region:"Caribbean",
+dish:"Green fig and saltfish",
+description:"Saint Lucia is a Caribbean island known for the Pitons and tropical landscapes."
+},
+
+{
+name:"Saint Vincent and the Grenadines",
+capital:"Kingstown",
+continent:"North America",
+population:"Approximately 100,000",
+currency:"Eastern Caribbean dollar",
+language:"English",
+region:"Caribbean",
+dish:"Roasted breadfruit and fried jackfish",
+description:"Saint Vincent and the Grenadines is an island nation in the Caribbean."
+},
+
+{
+name:"Samoa",
+capital:"Apia",
+continent:"Oceania",
+population:"Approximately 220,000",
+currency:"Samoan tālā",
+language:"Samoan and English",
+region:"Pacific",
+dish:"Palusami",
+description:"Samoa is a Polynesian island country in the South Pacific."
+},
+
+{
+name:"San Marino",
+capital:"San Marino",
+continent:"Europe",
+population:"Approximately 34,000",
+currency:"Euro",
+language:"Italian",
+region:"Southern Europe",
+dish:"Torta Tre Monti",
+description:"San Marino is a small independent country surrounded by Italy."
+},
+
+{
+name:"Sao Tome and Principe",
+capital:"São Tomé",
+continent:"Africa",
+population:"Approximately 240,000",
+currency:"São Tomé and Príncipe dobra",
+language:"Portuguese",
+region:"Central Africa",
+dish:"Calulu",
+description:"São Tomé and Príncipe is an island country in the Gulf of Guinea."
+},
+
+{
+name:"Saudi Arabia",
+capital:"Riyadh",
+continent:"Asia",
+population:"Approximately 35 million",
+currency:"Saudi riyal",
+language:"Arabic",
+region:"Middle East",
+dish:"Kabsa",
+description:"Saudi Arabia occupies much of the Arabian Peninsula and contains large desert regions."
+},
+
+{
+name:"Senegal",
+capital:"Dakar",
+continent:"Africa",
+population:"Approximately 19 million",
+currency:"West African CFA franc",
+language:"French and Wolof",
+region:"West Africa",
+dish:"Thieboudienne",
+description:"Senegal is a West African country on the Atlantic Ocean and is known for its music and cultural heritage."
+},
+
+{
+name:"Serbia",
+capital:"Belgrade",
+continent:"Europe",
+population:"Approximately 6.6 million",
+currency:"Serbian dinar",
+language:"Serbian",
+region:"Southeastern Europe",
+dish:"Ćevapi",
+description:"Serbia is a landlocked Balkan country located in southeastern Europe."
+},
+
+{
+name:"Seychelles",
+capital:"Victoria",
+continent:"Africa",
+population:"Approximately 120,000",
+currency:"Seychellois rupee",
+language:"Seychellois Creole, English and French",
+region:"Indian Ocean",
+dish:"Ladob",
+description:"Seychelles is an island country in the Indian Ocean northeast of Madagascar."
+},
+
+{
+name:"Sierra Leone",
+capital:"Freetown",
+continent:"Africa",
+population:"Approximately 9 million",
+currency:"Sierra Leonean leone",
+language:"English",
+region:"West Africa",
+dish:"Cassava leaves",
+description:"Sierra Leone is a West African country with an Atlantic coastline."
+},
+
+{
+name:"Singapore",
+capital:"Singapore",
+continent:"Asia",
+population:"Approximately 6 million",
+currency:"Singapore dollar",
+language:"English, Malay, Mandarin and Tamil",
+region:"Southeast Asia",
+dish:"Hainanese chicken rice",
+description:"Singapore is a city-state in Southeast Asia known for its modern skyline and multicultural food culture."
+},
+
+{
+name:"Slovakia",
+capital:"Bratislava",
+continent:"Europe",
+population:"Approximately 5.4 million",
+currency:"Euro",
+language:"Slovak",
+region:"Central Europe",
+dish:"Bryndzové halušky",
+description:"Slovakia is a landlocked Central European country with mountainous landscapes."
+},
+
+{
+name:"Slovenia",
+capital:"Ljubljana",
+continent:"Europe",
+population:"Approximately 2.1 million",
+currency:"Euro",
+language:"Slovenian",
+region:"Central Europe",
+dish:"Potica",
+description:"Slovenia is a Central European country with Alpine mountains, forests and a small Adriatic coastline."
+},
+
+{
+name:"Solomon Islands",
+capital:"Honiara",
+continent:"Oceania",
+population:"Approximately 750,000",
+currency:"Solomon Islands dollar",
+language:"English",
+region:"Pacific",
+dish:"Poi",
+description:"The Solomon Islands is an archipelago in the South Pacific."
+},
+
+{
+name:"Somalia",
+capital:"Mogadishu",
+continent:"Africa",
+population:"Approximately 20 million",
+currency:"Somali shilling",
+language:"Somali and Arabic",
+region:"Horn of Africa",
+dish:"Bariis iskukaris",
+description:"Somalia occupies much of the Horn of Africa and has a long coastline along the Indian Ocean."
+},
+
+{
+name:"South Africa",
+capital:"Pretoria",
+continent:"Africa",
+population:"Approximately 65 million",
+currency:"South African rand",
+language:"11 official languages",
+region:"Southern Africa",
+dish:"Bobotie",
+description:"South Africa is a diverse country at the southern tip of Africa with varied landscapes and cultures."
+},
+
+{
+name:"South Korea",
+capital:"Seoul",
+continent:"Asia",
+population:"Approximately 52 million",
+currency:"South Korean won",
+language:"Korean",
+region:"East Asia",
+dish:"Kimchi",
+description:"South Korea occupies the southern part of the Korean Peninsula and is known for technology, entertainment and cuisine."
+},
+
+{
+name:"South Sudan",
+capital:"Juba",
+continent:"Africa",
+population:"Approximately 12 million",
+currency:"South Sudanese pound",
+language:"English and many local languages",
+region:"East Africa",
+dish:"Kisra",
+description:"South Sudan is a landlocked country in northeastern Africa and became independent in 2011."
+},
+
+{
+name:"Spain",
+capital:"Madrid",
+continent:"Europe",
+population:"Approximately 49 million",
+currency:"Euro",
+language:"Spanish",
+region:"Southern Europe",
+dish:"Paella",
+description:"Spain is a European country occupying most of the Iberian Peninsula."
+},
+
+{
+name:"Sri Lanka",
+capital:"Sri Jayawardenepura Kotte",
+continent:"Asia",
+population:"Approximately 22 million",
+currency:"Sri Lankan rupee",
+language:"Sinhala and Tamil",
+region:"South Asia",
+dish:"Rice and curry",
+description:"Sri Lanka is an island country in the Indian Ocean south of India."
+},
+
+{
+name:"Sudan",
+capital:"Khartoum",
+continent:"Africa",
+population:"Approximately 52 million",
+currency:"Sudanese pound",
+language:"Arabic and English",
+region:"North Africa",
+dish:"Ful medames",
+description:"Sudan is a large country in northeastern Africa crossed by the Nile River."
+},
+
+{
+name:"Suriname",
+capital:"Paramaribo",
+continent:"South America",
+population:"Approximately 640,000",
+currency:"Surinamese dollar",
+language:"Dutch",
+region:"South America",
+dish:"Pom",
+description:"Suriname is a small country on the northeastern coast of South America with extensive rainforest."
+},
+
+{
+name:"Sweden",
+capital:"Stockholm",
+continent:"Europe",
+population:"Approximately 10.7 million",
+currency:"Swedish krona",
+language:"Swedish",
+region:"Northern Europe",
+dish:"Köttbullar",
+description:"Sweden is a Nordic country known for forests, lakes and its long Baltic coastline."
+},
+
+{
+name:"Switzerland",
+capital:"Bern",
+continent:"Europe",
+population:"Approximately 9 million",
+currency:"Swiss franc",
+language:"German, French, Italian and Romansh",
+region:"Central Europe",
+dish:"Fondue",
+description:"Switzerland is a mountainous Central European country known for the Alps and its multilingual population."
+},
+
+{
+name:"Syria",
+capital:"Damascus",
+continent:"Asia",
+population:"Approximately 26 million",
+currency:"Syrian pound",
+language:"Arabic",
+region:"Middle East",
+dish:"Kibbeh",
+description:"Syria is a Middle Eastern country with a long history and important ancient cities."
+},
+
+{
+name:"Tajikistan",
+capital:"Dushanbe",
+continent:"Asia",
+population:"Approximately 11 million",
+currency:"Tajikistani somoni",
+language:"Tajik",
+region:"Central Asia",
+dish:"Qurutob",
+description:"Tajikistan is a mountainous Central Asian country dominated by the Pamir Mountains."
+},
+
+{
+name:"Tanzania",
+capital:"Dodoma",
+continent:"Africa",
+population:"Approximately 72 million",
+currency:"Tanzanian shilling",
+language:"Swahili and English",
+region:"East Africa",
+dish:"Ugali",
+description:"Tanzania is an East African country home to Mount Kilimanjaro and part of Lake Victoria."
+},
+
+{
+name:"Thailand",
+capital:"Bangkok",
+continent:"Asia",
+population:"Approximately 71 million",
+currency:"Thai baht",
+language:"Thai",
+region:"Southeast Asia",
+dish:"Pad Thai",
+description:"Thailand is a Southeast Asian country known for temples, tropical beaches and its cuisine."
+},
+
+{
+name:"Timor-Leste",
+capital:"Dili",
+continent:"Asia",
+population:"Approximately 1.4 million",
+currency:"US dollar",
+language:"Tetum and Portuguese",
+region:"Southeast Asia",
+dish:"Ikan pepes",
+description:"Timor-Leste occupies the eastern part of Timor island and several smaller islands."
+},
+
+{
+name:"Togo",
+capital:"Lomé",
+continent:"Africa",
+population:"Approximately 9.5 million",
+currency:"West African CFA franc",
+language:"French",
+region:"West Africa",
+dish:"Fufu",
+description:"Togo is a narrow West African country on the Gulf of Guinea."
+},
+
+{
+name:"Tonga",
+capital:"Nuku'alofa",
+continent:"Oceania",
+population:"Approximately 100,000",
+currency:"Tongan paʻanga",
+language:"Tongan and English",
+region:"Pacific",
+dish:"Ota ika",
+description:"Tonga is a Polynesian kingdom made up of many islands in the South Pacific."
+},
+
+{
+name:"Trinidad and Tobago",
+capital:"Port of Spain",
+continent:"North America",
+population:"Approximately 1.5 million",
+currency:"Trinidad and Tobago dollar",
+language:"English",
+region:"Caribbean",
+dish:"Crab and callaloo",
+description:"Trinidad and Tobago is a two-island Caribbean country known for its multicultural traditions and carnival."
+},
+
+{
+name:"Tunisia",
+capital:"Tunis",
+continent:"Africa",
+population:"Approximately 12 million",
+currency:"Tunisian dinar",
+language:"Arabic",
+region:"North Africa",
+dish:"Couscous",
+description:"Tunisia is a North African Mediterranean country with ancient archaeological sites and a long coastline."
+},
+
+{
+name:"Türkiye",
+capital:"Ankara",
+continent:"Europe and Asia",
+population:"Approximately 86 million",
+currency:"Turkish lira",
+language:"Turkish",
+region:"Transcontinental",
+dish:"Kebab",
+description:"Türkiye lies across Europe and Asia and has played an important role in many historical civilizations."
+},
+
+{
+name:"Turkmenistan",
+capital:"Ashgabat",
+continent:"Asia",
+population:"Approximately 7.6 million",
+currency:"Turkmenistan manat",
+language:"Turkmen",
+region:"Central Asia",
+dish:"Plov",
+description:"Turkmenistan is a Central Asian country dominated by desert landscapes."
+},
+
+{
+name:"Tuvalu",
+capital:"Funafuti",
+continent:"Oceania",
+population:"Approximately 11,000",
+currency:"Australian dollar",
+language:"Tuvaluan and English",
+region:"Pacific",
+dish:"Palusami",
+description:"Tuvalu is one of the world's smallest countries and consists of low-lying Pacific atolls."
+},
+
+{
+name:"Uganda",
+capital:"Kampala",
+continent:"Africa",
+population:"Approximately 52 million",
+currency:"Ugandan shilling",
+language:"English and Swahili",
+region:"East Africa",
+dish:"Matoke",
+description:"Uganda is a landlocked East African country known for Lake Victoria and diverse wildlife."
+},
+
+{
+name:"Ukraine",
+capital:"Kyiv",
+continent:"Europe",
+population:"Approximately 39 million",
+currency:"Ukrainian hryvnia",
+language:"Ukrainian",
+region:"Eastern Europe",
+dish:"Borscht",
+description:"Ukraine is a large Eastern European country known for fertile plains, historic cities and the Black Sea coastline."
+},
+
+{
+name:"United Arab Emirates",
+capital:"Abu Dhabi",
+continent:"Asia",
+population:"Approximately 12 million",
+currency:"UAE dirham",
+language:"Arabic",
+region:"Middle East",
+dish:"Machboos",
+description:"The United Arab Emirates is a federation of seven emirates on the Arabian Peninsula."
+},
+
+{
+name:"United Kingdom",
+capital:"London",
+continent:"Europe",
+population:"Approximately 69 million",
+currency:"Pound sterling",
+language:"English",
+region:"Western Europe",
+dish:"Fish and chips",
+description:"The United Kingdom consists of England, Scotland, Wales and Northern Ireland."
+},
+
+{
+name:"United States",
+capital:"Washington, D.C.",
+continent:"North America",
+population:"Approximately 348 million",
+currency:"US dollar",
+language:"English is the most widely spoken language",
+region:"North America",
+dish:"Hamburger",
+description:"The United States is a large federal country made up of 50 states and several territories."
+},
+
+{
+name:"Uruguay",
+capital:"Montevideo",
+continent:"South America",
+population:"Approximately 3.4 million",
+currency:"Uruguayan peso",
+language:"Spanish",
+region:"South America",
+dish:"Chivito",
+description:"Uruguay is a small South American country located between Argentina and Brazil."
+},
+
+{
+name:"Uzbekistan",
+capital:"Tashkent",
+continent:"Asia",
+population:"Approximately 38 million",
+currency:"Uzbekistani soʻm",
+language:"Uzbek",
+region:"Central Asia",
+dish:"Plov",
+description:"Uzbekistan is a landlocked Central Asian country famous for its historic Silk Road cities."
+},
+
+{
+name:"Vanuatu",
+capital:"Port Vila",
+continent:"Oceania",
+population:"Approximately 350,000",
+currency:"Vanuatu vatu",
+language:"Bislama, English and French",
+region:"Pacific",
+dish:"Lap-lap",
+description:"Vanuatu is an island country in the South Pacific made up of more than 80 islands."
+},
+
+{
+name:"Vatican City",
+capital:"Vatican City",
+continent:"Europe",
+population:"Approximately 800",
+currency:"Euro",
+language:"Italian and Latin",
+region:"Southern Europe",
+dish:"Fettuccine alla papalina",
+description:"Vatican City is the world's smallest independent state and the headquarters of the Catholic Church."
+},
+
+{
+name:"Venezuela",
+capital:"Caracas",
+continent:"South America",
+population:"Approximately 29 million",
+currency:"Venezuelan bolívar",
+language:"Spanish",
+region:"South America",
+dish:"Pabellón criollo",
+description:"Venezuela is a northern South American country known for its Caribbean coastline and Angel Falls."
+},
+
+{
+name:"Vietnam",
+capital:"Hanoi",
+continent:"Asia",
+population:"Approximately 102 million",
+currency:"Vietnamese đồng",
+language:"Vietnamese",
+region:"Southeast Asia",
+dish:"Phở",
+description:"Vietnam is a Southeast Asian country with a long coastline, mountainous regions and rich cultural traditions."
+},
+
+{
+name:"Yemen",
+capital:"Sana'a",
+continent:"Asia",
+population:"Approximately 42 million",
+currency:"Yemeni rial",
+language:"Arabic",
+region:"Middle East",
+dish:"Saltah",
+description:"Yemen is located on the southern Arabian Peninsula and has a long history and distinctive architecture."
+},
+
+{
+name:"Zambia",
+capital:"Lusaka",
+continent:"Africa",
+population:"Approximately 22 million",
+currency:"Zambian kwacha",
+language:"English",
+region:"Southern Africa",
+dish:"Nshima",
+description:"Zambia is a landlocked southern African country known for Victoria Falls and the Zambezi River."
+},
+
+{
+name:"Zimbabwe",
+capital:"Harare",
+continent:"Africa",
+population:"Approximately 17 million",
+currency:"Zimbabwe Gold and other currencies",
+language:"English, Shona and Ndebele",
+region:"Southern Africa",
+dish:"Sadza",
+description:"Zimbabwe is a landlocked southern African country known for Victoria Falls, wildlife and archaeological sites."
+}
+
+];
+
+
+/*
+========================================================
+GET HTML ELEMENTS
+========================================================
+*/
+
+const countryList =
+    document.getElementById("myUL");
+
+const searchInput =
+    document.getElementById("myInput");
+
+const countryCount =
+    document.getElementById("countryCount");
+
+const noResults =
+    document.getElementById("noResults");
+
+const searchMessage =
+    document.getElementById("searchMessage");
+
+const countryModal =
+    document.getElementById("countryModal");
+
+
+/*
+========================================================
+DISPLAY COUNTRIES
+========================================================
+*/
+
+function displayCountries(countryArray) {
+
+    countryList.innerHTML = "";
+
+    countryArray.forEach(country => {
+
+        const li =
+            document.createElement("li");
+
+        const link =
+            document.createElement("a");
+
+        link.href = "#";
+
+        /*
+        Stop the browser from jumping
+        to the top of the page.
+        */
+
+        link.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            showCountry(country);
+
+        });
+
+
+        /*
+        Country icon
+        */
+
+        const icon =
+            document.createElement("span");
+
+        icon.className =
+            "country-icon";
+
+        icon.textContent =
+            "🌍";
+
+
+        /*
+        Country name
+        */
+
+        const name =
+            document.createTextNode(country.name);
+
+
+        /*
+        Add everything to the card
+        */
+
+        link.appendChild(icon);
+
+        link.appendChild(name);
+
+        li.appendChild(link);
+
+        countryList.appendChild(li);
+
+    });
+
+
+    /*
+    Update counter
+    */
+
+    countryCount.textContent =
+        countryArray.length;
+
+
+    /*
+    Show/hide no results
+    */
+
+    if (countryArray.length === 0) {
+
+        countryList.style.display =
+            "none";
+
+        noResults.style.display =
+            "block";
+
+    } else {
+
+        countryList.style.display =
+            "grid";
+
+        noResults.style.display =
+            "none";
+
+    }
+
+
+    /*
+    Update search message
+    */
+
+    if (searchInput.value.trim() === "") {
+
+        searchMessage.textContent =
+            "Browse our global directory";
+
+    } else {
+
+        searchMessage.textContent =
+            "Showing matching countries";
+
+    }
+
+}
+
+
+/*
+========================================================
+SHOW COUNTRY INFORMATION
+========================================================
+*/
+
+function showCountry(country) {
+
+    document.getElementById("modalCountryName")
+        .textContent = country.name;
+
+    document.getElementById("modalSubtitle")
+        .textContent =
+        "Explore information about " + country.name;
+
+
+    document.getElementById("modalCapital")
+        .textContent = country.capital;
+
+    document.getElementById("modalContinent")
+        .textContent = country.continent;
+
+    document.getElementById("modalPopulation")
+        .textContent = country.population;
+
+    document.getElementById("modalCurrency")
+        .textContent = country.currency;
+
+    document.getElementById("modalLanguage")
+        .textContent = country.language;
+
+    document.getElementById("modalRegion")
+        .textContent = country.region;
+
+    document.getElementById("modalDish")
+        .textContent = country.dish;
+
+    document.getElementById("modalDescription")
+        .textContent = country.description;
+
+
+    /*
+    Display modal
+    */
+
+    countryModal.style.display =
+        "flex";
+
+    /*
+    Prevent background scrolling
+    */
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+/*
+========================================================
+CLOSE COUNTRY INFORMATION
+========================================================
+*/
+
+function closeCountry() {
+
+    countryModal.style.display =
+        "none";
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+/*
+========================================================
+CLICK OUTSIDE MODAL TO CLOSE
+========================================================
+*/
+
+countryModal.addEventListener("click", function(event) {
+
+    if (event.target === countryModal) {
+
+        closeCountry();
+
+    }
+
+});
+
+
+/*
+========================================================
+ESCAPE KEY TO CLOSE
+========================================================
+*/
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+
+        closeCountry();
+
+    }
+
+});
+
+
+/*
+========================================================
+SEARCH
+========================================================
+*/
+
+function searchCountries() {
+
+    const searchTerm =
+        searchInput.value
+            .toLowerCase()
+            .trim();
+
+
+    const filteredCountries =
+        countries.filter(country => {
+
+            return country.name
+                .toLowerCase()
+                .includes(searchTerm);
+
+        });
+
+
+    displayCountries(filteredCountries);
+
+}
+
+
+/*
+========================================================
+SEARCH WHEN USER TYPES
+========================================================
+*/
+
+searchInput.addEventListener(
+    "input",
+    searchCountries
+);
+
+
+/*
+========================================================
+DISPLAY ALL COUNTRIES ON PAGE LOAD
+========================================================
+*/
+
+displayCountries(countries);
+
+</script>
+
+</body>
+
+</html>
+```
